@@ -1,3 +1,4 @@
+# merge me
 "setting
 "文字コードをUFT-8に設定
 set fenc=utf-8
@@ -64,3 +65,4 @@ set wrapscan
 set hlsearch
 " ESC連打でハイライト解除
 nmap <Esc><Esc> :nohlsearch<CR><Esc>" 不可視文字を可視化(タブが「et list listchars=tab:\ﾎ
+
