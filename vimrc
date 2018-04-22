@@ -1,66 +1,99 @@
-"setting
-"•¶šƒR[ƒh‚ğUFT-8‚Éİ’è
-set fenc=utf-8
-" encoding
-set fileencodings=utf-8,euc-jp,sjis,cp932,iso-2022-jp
-" ƒoƒbƒNƒAƒbƒvƒtƒ@ƒCƒ‹‚ğì‚ç‚È‚¢
-set nobackup
-" ƒXƒƒbƒvƒtƒ@ƒCƒ‹‚ğì‚ç‚È‚¢
-set noswapfile
-" undo file‚ğì‚ç‚È‚¢
-set noundofile
-" •ÒW’†‚Ìƒtƒ@ƒCƒ‹‚ª•ÏX‚³‚ê‚½‚ç©“®‚Å“Ç‚İ’¼‚·
-set autoread
-" ƒoƒbƒtƒ@‚ª•ÒW’†‚Å‚à‚»‚Ì‘¼‚Ìƒtƒ@ƒCƒ‹‚ğŠJ‚¯‚é‚æ‚¤‚É
-set hidden
-" “ü—Í’†‚ÌƒRƒ}ƒ“ƒh‚ğƒXƒe[ƒ^ƒX‚É•\¦‚·‚é
-set showcmd
-"use clipboard
-set clipboard=unnamed,autoselect
-"save to corrent directory
-:set browsedir=buffer
-" Œ©‚½–ÚŒn
-" s”Ô†‚ğ•\¦
-set number
-" Œ»İ‚Ìs‚ğ‹­’²•\¦
-set cursorline
-" Œ»İ‚Ìs‚ğ‹­’²•\¦icj
-set cursorcolumn
-" s––‚Ì1•¶šæ‚Ü‚ÅƒJ[ƒ\ƒ‹‚ğˆÚ“®‚Å‚«‚é‚æ‚¤‚É
-set virtualedit=onemore
-" ƒCƒ“ƒfƒ“ƒg‚ÍƒXƒ}[ƒgƒCƒ“ƒfƒ“ƒg
-set smartindent
-" ƒr[ƒv‰¹‚ğ‰Â‹‰»
-set visualbell
-" Š‡ŒÊ“ü—Í‚Ì‘Î‰‚·‚éŠ‡ŒÊ‚ğ•\¦
-set showmatch
-" ƒXƒe[ƒ^ƒXƒ‰ƒCƒ“‚ğí‚É•\¦
-set laststatus=2
-" ƒRƒ}ƒ“ƒhƒ‰ƒCƒ“‚Ì•âŠ®
-set wildmode=list:longest
-" Ü‚è•Ô‚µ‚É•\¦s’PˆÊ‚Å‚ÌˆÚ“®‚Å‚«‚é‚æ‚¤‚É‚·‚é
-nnoremap j gj
-nnoremap k gk
+ï»¿if v:lang =~ "utf8$" || v:lang =~ "UTF-8$"
+   set fileencodings=ucs-bom,utf-8,latin1
+endif
 
+set nocompatible        " Use Vim defaults (much better!)
+set bs=indent,eol,start         " allow backspacing over everything in insert mode
+"set ai                 " always set autoindenting on
+"set backup             " keep a backup file
+set viminfo='20,\"50    " read/write a .viminfo file, don't store more
+                        " than 50 lines of registers
+set history=50          " keep 50 lines of command line history
+set ruler               " show the cursor position all the time
 
-" TabŒn
- expandtab
-s“ªˆÈŠO‚ÌTab•¶š‚Ì•\¦•iƒXƒy[ƒX‚¢‚­‚Â•ªj
-set tabstop=2
-" s“ª‚Å‚ÌTab•¶š‚Ì•\¦•
-set shiftwidth=2
+" Only do this part when compiled with support for autocommands
+if has("autocmd")
+  augroup redhat
+  autocmd!
+  " In text files, always limit the width of text to 78 characters
+  " autocmd BufRead *.txt set tw=78
+  " When editing a file, always jump to the last cursor position
+  autocmd BufReadPost *
+  \ if line("'\"") > 0 && line ("'\"") <= line("$") |
+  \   exe "normal! g'\"" |
+  \ endif
+  " don't write swapfile on most commonly used directories for NFS mounts or USB sticks
+  autocmd BufNewFile,BufReadPre /media/*,/run/media/*,/mnt/* set directory=~/tmp,/var/tmp,/tmp
+  " start with spec file template
+  autocmd BufNewFile *.spec 0r /usr/share/vim/vimfiles/template.spec
+  augroup END
+endif
 
+if has("cscope") && filereadable("/usr/bin/cscope")
+   set csprg=/usr/bin/cscope
+   set csto=0
+   set cst
+   set nocsverb
+   " add any database in current directory
+   if filereadable("cscope.out")
+      cs add $PWD/cscope.out
+   " else add database pointed to by environment
+   elseif $CSCOPE_DB != ""
+      cs add $CSCOPE_DB
+   endif
+   set csverb
+endif
 
-" ŒŸõŒn
-" ŒŸõ•¶š—ñ‚ª¬•¶š‚Ìê‡‚Í‘å•¶š¬•¶š‚ğ‹æ•Ê‚È‚­ŒŸõ‚·‚é
+" Switch syntax highlighting on, when the terminal has colors
+" Also switch on highlighting the last used search pattern.
+if &t_Co > 2 || has("gui_running")
+  syntax on
+  set hlsearch
+endif
+
+filetype plugin on
+
+if &term=="xterm"
+     set t_Co=8
+     set t_Sb=m
+     set t_Sf=m
+endif
+
+" Don't wake up system with blinking cursor:
+" http://www.linuxpowertop.org/known.php
+let &guicursor = &guicursor . ",a:blinkon0"
+
+" vim ã®ç‹¬è‡ªæ‹¡å¼µæ©Ÿèƒ½ã‚’ä½¿ã†(viã¨ã®äº’æ›æ€§ã‚’ã¨ã‚‰ãªã„)
+set nocompatible
+" æ–‡å­—ã‚³ãƒ¼ãƒ‰ã‚’æŒ‡å®šã™ã‚‹
+set encoding=utf-8
+" ãƒ•ã‚¡ã‚¤ãƒ«ã‚¨ãƒ³ã‚³ãƒ¼ãƒ‰ã‚’æŒ‡å®šã™ã‚‹
+set fileencodings=iso-2022-jp,sjis
+" è‡ªå‹•èªè­˜ã•ã›ã‚‹æ”¹è¡Œã‚³ãƒ¼ãƒ‰ã‚’æŒ‡å®šã™ã‚‹
+set fileformats=unix,dos
+" ãƒãƒƒã‚¯ã‚¢ãƒƒãƒ—ã‚’ã¨ã‚‹
+set backup
+" ãƒãƒƒã‚¯ã‚¢ãƒƒãƒ—ã‚’ä½œã‚‹ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªã‚’æŒ‡å®šã™ã‚‹
+set backupdir=~/backup
+" æ¤œç´¢å±¥æ­´ã‚’50å€‹æ®‹ã™
+set history=50
+" æ¤œç´¢æ™‚ã«å¤§æ–‡å­—å°æ–‡å­—ã‚’åŒºåˆ¥ã—ãªã„
 set ignorecase
-" ŒŸõ•¶š—ñ‚É‘å•¶š‚ªŠÜ‚Ü‚ê‚Ä‚¢‚éê‡‚Í‹æ•Ê‚µ‚ÄŒŸõ‚·‚é
+" æ¤œç´¢èªã«å¤§æ–‡å­—ã‚’æ··ãœã‚‹ã¨æ¤œç´¢æ™‚ã«å¤§æ–‡å­—ã‚’åŒºåˆ¥ã™ã‚‹
 set smartcase
-" ŒŸõ•¶š—ñ“ü—Í‚É‡Ÿ‘ÎÛ•¶š—ñ‚Éƒqƒbƒg‚³‚¹‚é
-set incsearch
-" ŒŸõ‚ÉÅŒã‚Ü‚Ås‚Á‚½‚çÅ‰‚É–ß‚é
-set wrapscan
-" ŒŸõŒê‚ğƒnƒCƒ‰ƒCƒg•\¦
+" æ¤œç´¢èªã«ãƒãƒƒãƒã—ãŸå˜èªã‚’ãƒã‚¤ãƒ©ã‚¤ãƒˆã™ã‚‹
 set hlsearch
-" ESC˜A‘Å‚ÅƒnƒCƒ‰ƒCƒg‰ğœ
-nmap <Esc><Esc> :nohlsearch<CR><Esc>" •s‰Â‹•¶š‚ğ‰Â‹‰»(ƒ^ƒu‚ªuet list listchars=tab:\Î
+" ã‚¤ãƒ³ã‚¯ãƒªãƒ¡ãƒ³ã‚¿ãƒ«ã‚µãƒ¼ãƒã‚’ä½¿ã† ( æ¤œç´¢èªã‚’å…¥ã‚Œã¦ã„ã‚‹é€”ä¸­ã‹ã‚‰éšæ™‚ãƒãƒƒãƒã™ã‚‹æ–‡å­—åˆ—ã®æ¤œç´¢ã‚’é–‹å§‹)
+set incsearch
+" è¡Œç•ªå·ã‚’è¡¨ç¤ºã™ã‚‹
+set number
+" æ”¹è¡Œ ( $ ) ã‚„ã‚¿ãƒ– ( ^I ) ã‚’å¯è¦–åŒ–ã™ã‚‹
+set list
+" æ‹¬å¼§å…¥åŠ›æ™‚ã«å¯¾å¿œã™ã‚‹æ‹¬å¼§ã‚’å¼·èª¿ã™ã‚‹
+set showmatch
+" æ§‹æ–‡ã”ã¨ã«è‰²åˆ†ã‘è¡¨ç¤ºã™ã‚‹
+syntax on
+" [ syntax on ] ã®å ´åˆã®ã‚³ãƒ¡ãƒ³ãƒˆæ–‡ã®è‰²ã‚’å¤‰æ›´ã™ã‚‹
+highlight Comment ctermfg=LightCyan
+" ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦å¹…ã§è¡Œã‚’æŠ˜ã‚Šè¿”ã™
+set wrap
