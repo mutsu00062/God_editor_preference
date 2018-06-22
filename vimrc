@@ -1,15 +1,15 @@
-﻿if v:lang =~ "utf8$" || v:lang =~ "UTF-8$"
+if v:lang =~ "utf8$" || v:lang =~ "UTF-8$"
    set fileencodings=ucs-bom,utf-8,latin1
 endif
 
-set nocompatible        " Use Vim defaults (much better!)
-set bs=indent,eol,start         " allow backspacing over everything in insert mode
-"set ai                 " always set autoindenting on
-"set backup             " keep a backup file
-set viminfo='20,\"50    " read/write a .viminfo file, don't store more
-                        " than 50 lines of registers
-set history=50          " keep 50 lines of command line history
-set ruler               " show the cursor position all the time
+set nocompatible	" Use Vim defaults (much better!)
+set bs=indent,eol,start		" allow backspacing over everything in insert mode
+"set ai			" always set autoindenting on
+"set backup		" keep a backup file
+set viminfo='20,\"50	" read/write a .viminfo file, don't store more
+			" than 50 lines of registers
+set history=50		" keep 50 lines of command line history
+set ruler		" show the cursor position all the time
 
 " Only do this part when compiled with support for autocommands
 if has("autocmd")
@@ -55,45 +55,68 @@ filetype plugin on
 
 if &term=="xterm"
      set t_Co=8
-     set t_Sb=m
-     set t_Sf=m
+     set t_Sb=[4%dm
+     set t_Sf=[3%dm
 endif
 
 " Don't wake up system with blinking cursor:
 " http://www.linuxpowertop.org/known.php
 let &guicursor = &guicursor . ",a:blinkon0"
 
-" vim の独自拡張機能を使う(viとの互換性をとらない)
-set nocompatible
-" 文字コードを指定する
-set encoding=utf-8
-" ファイルエンコードを指定する
-set fileencodings=iso-2022-jp,sjis
-" 自動認識させる改行コードを指定する
-set fileformats=unix,dos
-" バックアップをとる
-set backup
-" バックアップを作るディレクトリを指定する
-set backupdir=~/backup
-" 検索履歴を50個残す
-set history=50
-" 検索時に大文字小文字を区別しない
-set ignorecase
-" 検索語に大文字を混ぜると検索時に大文字を区別する
-set smartcase
-" 検索語にマッチした単語をハイライトする
-set hlsearch
-" インクリメンタルサーチを使う ( 検索語を入れている途中から随時マッチする文字列の検索を開始)
-set incsearch
-" 行番号を表示する
-set number
-" 改行 ( $ ) やタブ ( ^I ) を可視化する
-set list
-" 括弧入力時に対応する括弧を強調する
-set showmatch
-" 構文ごとに色分け表示する
-syntax on
-" [ syntax on ] の場合のコメント文の色を変更する
-highlight Comment ctermfg=LightCyan
-" ウィンドウ幅で行を折り返す
-set wrap
+"setting
+""文字コードをUFT-8に設定
+ set fenc=utf-8
+ set fileencodings=utf-8,euc-jp,sjis,cp932,iso-2022-jp
+ " バックアップファイルを作らない
+ set nobackup
+ " スワップファイルを作らない
+ set noswapfile
+ " undo fileを作らない
+ set noundofile
+ " 編集中のファイルが変更されたら自動で読み直す
+ set autoread
+ " バッファが編集中でもその他のファイルを開けるように
+ set hidden
+ " 入力中のコマンドをステータスに表示する
+ set showcmd
+ "use clipboard
+ set clipboard=unnamed,autoselect
+ "save to corrent directory
+ set browsedir=buffer
+ " 見た目系
+ " 行番号を表示
+ set number
+ " 行末の1文字先までカーソルを移動できるように
+ set virtualedit=onemore
+ " indent
+ set cindent
+ set visualbell
+ " 括弧入力時の対応する括弧を表示
+ set showmatch
+ " ステータスラインを常に表示
+ set laststatus=2
+ " コマンドラインの補完
+ set wildmode=list:longest
+ " 折り返し時に表示行単位での移動できるようにする
+ nnoremap j gj
+ nnoremap k gk
+
+ " Tab系
+  set tabstop=2
+  " 行頭でのTab文字の表示幅
+  set shiftwidth=2
+
+
+  " 検索系
+  " 検索文字列が小文字の場合は大文字小文字を区別なく検索する
+  set ignorecase
+  " 検索文字列に大文字が含まれている場合は区別して検索する
+  set smartcase
+  " 検索文字列入力時に順次対象文字列にヒットさせる
+  set incsearch
+  " 検索時に最後まで行ったら最初に戻る
+  set wrapscan
+  " 検索語をハイライト表示
+  set hlsearch
+  " ESC連打でハイライト解除
+  colorscheme ron
